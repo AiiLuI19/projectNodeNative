@@ -1,5 +1,4 @@
-[![screen.jpg](https://i.postimg.cc/yYSfs7HS/screen.jpg)](https://postimg.cc/F7Nbx519)
-<img src="https://i.postimg.cc/yYSfs7HS/screen.jpg" width='800' alt="screen"/>
+[![screen.jpg](https://i.postimg.cc/t48nyH97/screen.jpg)](https://postimg.cc/XrcYcmG0)
 > Why do I have a folder named ".expo" in my project?
 The ".expo" folder is created when an Expo project is started using "expo start" command.
 > What do the files contain?
