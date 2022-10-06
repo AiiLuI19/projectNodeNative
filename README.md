@@ -1,3 +1,5 @@
+<img src="http://joxi.ru/v29e0XDs4vy6O2" alt="screen "/>
+
 > Why do I have a folder named ".expo" in my project?
 The ".expo" folder is created when an Expo project is started using "expo start" command.
 > What do the files contain?
