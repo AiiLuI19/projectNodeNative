@@ -1,7 +1,6 @@
-[image-123986672-1.jpg](https://postimg.cc/SYC6tkkL)
-[image-123986672-2.jpg](https://postimg.cc/CBDnw7XS)
-[image-123986672-3.jpg](https://postimg.cc/PPdvkm4n)
-[image-123986672.jpg](https://postimg.cc/MnFnRg8z)
+
+[![image-123986672.jpg](https://i.postimg.cc/Pqt1Gk3v/image-123986672.jpg)](https://postimg.cc/MnFnRg8z)
+
 > Why do I have a folder named ".expo" in my project?
 The ".expo" folder is created when an Expo project is started using "expo start" command.
 > What do the files contain?
