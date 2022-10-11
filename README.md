@@ -1,12 +1,5 @@
-> Форма реестрации
-
-[![image-123986672-2.jpg](https://i.postimg.cc/ydpmXrTg/image-123986672-2.jpg)](https://postimg.cc/CBDnw7XS)
-[![image-123986672-1.jpg](https://i.postimg.cc/cC5FCLzz/image-123986672-1.jpg)](https://postimg.cc/SYC6tkkL)
-
-> Форма логинизации
-
-[![image-123986672.jpg](https://i.postimg.cc/Pqt1Gk3v/image-123986672.jpg)](https://postimg.cc/MnFnRg8z)
-[![image-123986672-3.jpg](https://i.postimg.cc/xTzvM5N8/image-123986672-3.jpg)](https://postimg.cc/PPdvkm4n)
+> React Native Debugger
+[![79549b3c0b.jpg](https://i.postimg.cc/Y0K8GZ58/79549b3c0b.jpg)](https://postimg.cc/nj2qNRcQ)
 
 
 > Why do I have a folder named ".expo" in my project?
