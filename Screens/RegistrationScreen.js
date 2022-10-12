@@ -101,7 +101,11 @@ export default function RegistrationScreen({ navigation }) {
         </View>
       </KeyboardAvoidingView>
       <View style={styles.wrapBottom}>
-        <TouchableOpacity onPress={onRegistr} style={styles.button}>
+        <TouchableOpacity
+          title="Go to Home"
+          onPress={() => navigation.navigate("home")}
+          style={styles.button}
+        >
           <Text style={styles.textBtn}>Зарегестрироваться</Text>
         </TouchableOpacity>
         <Text style={styles.text} onPress={() => navigation.navigate("login")}>

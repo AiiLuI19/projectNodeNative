@@ -9,11 +9,14 @@ import {
   View,
   TouchableWithoutFeedback,
   Keyboard,
-  KeyboardAvoidingView,
-  Platform,
+  Button,
 } from "react-native";
 import RegistrationScreen from "./Screens/RegistrationScreen";
 import LoginScreen from "./Screens/LoginScreen";
+import Home from "./Screens/Home";
+import CommentsScreen from "./Screens/CommentsScreen";
+
+import MapScreen from "./Screens/MapScreen";
 
 const Stack = createNativeStackNavigator();
 
@@ -34,21 +37,19 @@ export default function App() {
   }
 
   return (
-    // <KeyboardAvoidingView
-    //   behavior={Platform.OS === "ios" ? "padding" : "height"}
-    //   style={{ flex: 1 }}
-    // >
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
       <View style={styles.container} onLayout={onLayoutRootView}>
         <NavigationContainer>
-          <Stack.Navigator>
+          <Stack.Navigator initialRouteName="login">
             <Stack.Screen name="auth" component={RegistrationScreen} />
             <Stack.Screen name="login" component={LoginScreen} />
+            <Stack.Screen name="comments" component={CommentsScreen} />
+            <Stack.Screen name="map" component={MapScreen} />
+            <Stack.Screen name="home" component={Home} />
           </Stack.Navigator>
         </NavigationContainer>
       </View>
     </TouchableWithoutFeedback>
-    // </KeyboardAvoidingView>
   );
 }
 
