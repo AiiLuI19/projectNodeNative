@@ -1,6 +1,6 @@
 > React Native Debugger
 
-[![79549b3c0b.jpg](https://i.postimg.cc/Y0K8GZ58/79549b3c0b.jpg)](https://postimg.cc/nj2qNRcQ)
+[![IMG-24265232.gif](https://i.postimg.cc/85xrztFg/IMG-24265232.gif)](https://postimg.cc/LYBsykBx)
 
 
 > Why do I have a folder named ".expo" in my project?
