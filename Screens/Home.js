@@ -1,17 +1,20 @@
 // Home.js
 
 import React from "react";
-import { View, StyleSheet } from "react-native";
+import { View, StyleSheet, TouchableOpacity } from "react-native";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
 import PostsScreen from "./PostsScreen";
 import ProfileScreen from "./ProfileScreen";
 import CreatePostsScreen from "./CreatePostsScreen";
+import CommentsScreen from "./CommentsScreen";
+
+import MapScreen from "./MapScreen";
 
 const Tabs = createBottomTabNavigator();
 
-const Home = () => {
+const Home = ({ navigation }) => {
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -55,7 +58,7 @@ const Home = () => {
         name="create"
         component={CreatePostsScreen}
         options={({ navigation }) => ({
-          title: "CreatePostsScreen",
+          title: "Создать публикацию",
           tabBarStyle: { display: "none" },
           tabBarIcon: ({ focused, color, size, style }) => {
             return (
@@ -88,6 +91,56 @@ const Home = () => {
               <AntDesign name="user" size={size} color="#FF6C00" />
             ) : (
               <AntDesign name="user" size={size} color={color} />
+            );
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="map"
+        component={MapScreen}
+        options={{
+          title: "Map Screen",
+          headerTitleAlign: "center",
+          tabBarStyle: { display: "none" },
+          tabBarButton: () => null,
+          headerLeft: () => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.arrow}
+                onPress={() => navigation.navigate("posts")}
+              >
+                <AntDesign
+                  name="arrowleft"
+                  size={24}
+                  color="rgba(33, 33, 33, 0.8)"
+                />
+              </TouchableOpacity>
+            );
+          },
+        }}
+      />
+      <Tabs.Screen
+        name="comments"
+        component={CommentsScreen}
+        options={{
+          headerTitleAlign: "center",
+          title: "Комментарии",
+          tabBarStyle: { display: "none" },
+          tabBarButton: () => null,
+          headerLeft: () => {
+            return (
+              <TouchableOpacity
+                activeOpacity={0.8}
+                style={styles.arrow}
+                onPress={() => navigation.navigate("posts")}
+              >
+                <AntDesign
+                  name="arrowleft"
+                  size={24}
+                  color="rgba(33, 33, 33, 0.8)"
+                />
+              </TouchableOpacity>
             );
           },
         }}
