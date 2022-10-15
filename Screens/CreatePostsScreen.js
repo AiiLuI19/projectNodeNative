@@ -8,11 +8,11 @@ import {
   Image,
 } from "react-native";
 import { Camera } from "expo-camera";
+import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
 import * as Location from "expo-location";
 import { MaterialIcons } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
-
 import { AntDesign } from "@expo/vector-icons";
 
 function CreatePostsScreen({ navigation }) {
@@ -22,7 +22,6 @@ function CreatePostsScreen({ navigation }) {
   const [type, setType] = useState(Camera.Constants.Type.back);
   const [text, onChangeText] = React.useState("");
   const [textMap, onChangeTextMap] = React.useState("");
-
   const [locationPhoto, setLocationPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
 
@@ -79,6 +78,18 @@ function CreatePostsScreen({ navigation }) {
       navigation.navigate("posts", { text, textMap, locationPhoto, photoPath });
     } catch (err) {
       console.log(err);
+    }
+  };
+  const uploadPhoto = async () => {
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.All,
+      allowsEditing: true,
+      aspect: [4, 3],
+      quality: 1,
+    });
+
+    if (!result.cancelled) {
+      setPhotoPath(result.uri);
     }
   };
 
@@ -155,9 +166,7 @@ function CreatePostsScreen({ navigation }) {
         </Text>
       ) : (
         <TouchableOpacity onPress={() => uploadPhoto()}>
-          <Text style={styles.textInPhoto} onPress={() => console.log("ok")}>
-            Загрузите фото
-          </Text>
+          <Text style={styles.textInPhoto}>Загрузите фото</Text>
         </TouchableOpacity>
       )}
 
