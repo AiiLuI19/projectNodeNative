@@ -18,20 +18,20 @@ const MapScreen = ({ route }) => {
     <View style={styles.container}>
       <MapView
         style={styles.mapStyle}
-        region={{
-          ...route.params.location,
-          latitudeDelta: 0.0922,
-          longitudeDelta: 0.0421,
+        initialRegion={{
+          longitude: route.params.location.coords.longitude,
+          latitude: route.params.location.coords.latitude,
+          latitudeDelta: 0.001,
+          longitudeDelta: 0.006,
         }}
-        showsUserLocation={true}
       >
-        {route.params.location && (
-          <Marker
-            title="I am here"
-            coordinate={route.params.location}
-            description="Hello"
-          />
-        )}
+        <Marker
+          coordinate={{
+            longitude: route.params.location.coords.longitude,
+            latitude: route.params.location.coords.latitude,
+          }}
+          title={route.params.title}
+        ></Marker>
       </MapView>
     </View>
   );

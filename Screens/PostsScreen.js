@@ -22,12 +22,14 @@ import { pathSlice } from "../redux/pathReducer";
 import { db } from "../firebase/config";
 import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
+import { AntDesign } from "@expo/vector-icons";
 
 const PostsScreen = ({ navigation, route }) => {
-  const [post, setPost] = useState([]);
+  const [posts, setPosts] = useState([]);
   const { email, login, avatar, userId } = useSelector((state) => state.auth);
 
   const dispatch = useDispatch();
+  console.log(email);
 
   const getAllPosts = async () => {
     const querySnapshot = await getDocs(collection(db, "posts"));
@@ -71,19 +73,7 @@ const PostsScreen = ({ navigation, route }) => {
     );
     return () => unsubscribe();
   }, []);
-
-  useEffect(() => {
-    const unsubscribe = onSnapshot(
-      collection(db, "posts"),
-      (snapshot) => {
-        getAllPosts();
-      },
-      (error) => {
-        console.log(error);
-      }
-    );
-    return () => unsubscribe();
-  }, []);
+  console.log("posts", posts);
   return (
     <View style={styles.container}>
       <View
@@ -124,13 +114,13 @@ const PostsScreen = ({ navigation, route }) => {
 
         <View style={styles.postBox}>
           <FlatList
-            data={post}
-            keyExtractor={(item, index) => index.toString()}
+            data={posts}
+            keyExtractor={(item) => item.id}
             renderItem={({ item }) => {
               return (
                 <View>
                   <Image
-                    source={{ uri: item.photoPath }}
+                    source={{ uri: item.photo }}
                     style={{ height: 240, borderRadius: 16 }}
                   ></Image>
                   <View style={{ marginTop: 8 }}>
@@ -141,8 +131,12 @@ const PostsScreen = ({ navigation, route }) => {
                       <TouchableOpacity
                         onPress={async () => {
                           navigation.navigate("comments", {
-                            photo: item.photoPath,
+                            photo: item.photo,
+                            id: item.id,
                           });
+                          dispatch(
+                            pathSlice.actions.setPath({ path: route.name })
+                          );
                         }}
                       >
                         <FontAwesome
@@ -151,15 +145,30 @@ const PostsScreen = ({ navigation, route }) => {
                           color="black"
                         />
                       </TouchableOpacity>
-                      <Text style={styles.textPost}> {0}</Text>
+                      <Text style={styles.textPost}> {item.comments || 0}</Text>
+
+                      <TouchableOpacity onPress={() => addLike(item.id)}>
+                        {item.likes.includes(`${userId}`) ? (
+                          <AntDesign name="like1" size={24} color="#212121" />
+                        ) : (
+                          <AntDesign name="like2" size={24} color="#212121" />
+                        )}
+                      </TouchableOpacity>
+                      <Text style={styles.textPost}>
+                        {item.likes?.length || 0}
+                      </Text>
                     </View>
 
                     <TouchableOpacity
                       style={styles.locationInfo}
                       onPress={() => {
                         navigation.navigate("map", {
-                          location: item.locationPhoto,
+                          location: item.location,
+                          title: item.textMap,
                         });
+                        dispatch(
+                          pathSlice.actions.setPath({ path: route.name })
+                        );
                       }}
                     >
                       <FontAwesome5
@@ -224,7 +233,8 @@ const styles = StyleSheet.create({
   postInfoBox: {
     flexDirection: "row",
     justifyContent: "space-between",
-    marginTop: 11,
+    marginTop: 0,
+    marginBottom: 11,
   },
   comentsInfo: {
     flexDirection: "row",

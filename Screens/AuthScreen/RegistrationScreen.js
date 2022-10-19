@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from "react";
 import { storage } from "../../firebase/config";
 import { authSlice } from "../../redux/authReducer";
+import * as ImagePicker from "expo-image-picker";
 import { ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { authSignUpUser, updateAvatar } from "../../redux/authOperations";
 import { useDispatch } from "react-redux";
+import Svg, { Circle, Path } from "react-native-svg";
 import {
   StyleSheet,
   View,
@@ -110,7 +112,7 @@ export default function RegistrationScreen({ navigation }) {
                   style={{ height: "100%", width: "100%", borderRadius: 16 }}
                   source={{ uri: avatar }}
                 />
-                <TouchableOpacity
+                {/* <TouchableOpacity
                   style={styles.plus}
                   onPress={pickImage}
                   // onPress={() => Alert.alert("add avatar")}
@@ -121,7 +123,30 @@ export default function RegistrationScreen({ navigation }) {
                     color="#FF6C00"
                     fontSize="25px"
                     style={styles.plusText}
-                  ></View>
+                  ></View> */}
+                {/* </TouchableOpacity> */}
+                <TouchableOpacity style={styles.addIconBox} onPress={pickImage}>
+                  <Svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    width="25"
+                    height="25"
+                    fill="none"
+                    viewBox="0 0 25 25"
+                  >
+                    <Circle
+                      cx="12.5"
+                      cy="12.5"
+                      r="12"
+                      fill="none"
+                      stroke="#BDBDBD"
+                    ></Circle>
+                    <Path
+                      fill="#BDBDBD"
+                      fillRule="evenodd"
+                      d="M13 6h-1v6H6v1h6v6h1v-6h6v-1h-6V6z"
+                      clipRule="evenodd"
+                    ></Path>
+                  </Svg>
                 </TouchableOpacity>
               </View>
               <Text style={styles.title}>Регистрaция</Text>
@@ -336,5 +361,10 @@ const styles = StyleSheet.create({
   },
   wrap: {
     width: "100%",
+  },
+  addIconBox: {
+    position: "absolute",
+    right: -13,
+    bottom: 14,
   },
 });

@@ -12,21 +12,71 @@ import {
   KeyboardAvoidingView,
   Platform,
 } from "react-native";
+import {
+  collection,
+  addDoc,
+  getDocs,
+  doc,
+  updateDoc,
+  increment,
+} from "firebase/firestore";
+import { db } from "../firebase/config";
+import { useSelector } from "react-redux";
+import { useIsFocused } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
-const CommentsScreen = ({ route }) => {
-  const [post, setPost] = useState([]);
+
+function CommentsScreen({ route }) {
+  // const [post, setPost] = useState([]);
   const [comment, setComment] = useState("");
-  // const { photo } = route.params;
+  const [comments, setComments] = useState([]);
+  const { photo, id } = route.params;
+  const [isShownKeybord, setIsShownKeybord] = useState(false);
+  const isFocused = useIsFocused();
+
+  const { userId, login, avatar } = useSelector((state) => state.auth);
+
+  const getAllComments = async () => {
+    const querySnapshot = await getDocs(
+      collection(db, "posts", `${id}`, "comments")
+    );
+    let allComments = [];
+    querySnapshot.forEach((doc) => {
+      allComments.push({ ...doc.data(), id: doc.id });
+    });
+    setComments(allComments);
+  };
+
   useEffect(() => {
     if (!route.params) {
       return;
     }
-    setPost(route.params);
+    getAllComments();
+    // setPost(route.params);
   }, [route.params]);
+
   const addComment = async () => {
-    console.log("comment", comment);
+    if (comment.trim().length === 0) {
+      onKeyboradHide();
+      return;
+    }
+    try {
+      const date = new Date().toLocaleString();
+      await addDoc(collection(db, "posts", `${id}`, "comments"), {
+        comment,
+        login,
+        userId,
+        date,
+        avatar,
+      });
+      await updateDoc(doc(db, "posts", `${id}`), {
+        comments: increment(1),
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
+    }
+    setComment("");
   };
-  console.log("post", post);
+
   // console.log("photo", route.params.photo);
 
   return (
@@ -36,15 +86,52 @@ const CommentsScreen = ({ route }) => {
           style={{
             marginTop: 32,
             flex: 1,
+            marginBottom: 32,
+            zIndex: 1,
           }}
         >
           <Image
-            source={{
-              uri: post.photo,
+            source={{ uri: photo }}
+            style={{
+              height: 240,
+              borderRadius: 8,
+              width: "100%",
             }}
-            style={{ height: 240, borderRadius: 8, width: "100%" }}
           ></Image>
         </View>
+        <FlatList
+          style={{ marginBottom: 10 }}
+          data={comments}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View
+              style={{
+                ...styles.commentBox,
+                flexDirection: item.userId === userId ? "row" : "row-reverse",
+              }}
+              onStartShouldSetResponder={() => true}
+            >
+              <View
+                style={{
+                  ...styles.comment,
+                  borderTopRightRadius: item.userId === userId ? 0 : 6,
+                  borderTopLeftRadius: item.userId === userId ? 6 : 0,
+                }}
+              >
+                <Text style={styles.text}>{item?.comment}</Text>
+                <Text style={styles.textDate}>{item?.date}</Text>
+              </View>
+              <Image
+                source={{ uri: item.avatar }}
+                style={{
+                  ...styles.avatar,
+                  marginLeft: item.userId === userId ? 16 : 0,
+                  marginRight: item.userId === userId ? 0 : 16,
+                }}
+              ></Image>
+            </View>
+          )}
+        ></FlatList>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" && "position"}
@@ -67,7 +154,8 @@ const CommentsScreen = ({ route }) => {
       </View>
     </TouchableWithoutFeedback>
   );
-};
+}
+// export default CommentsScreen;
 
 const styles = StyleSheet.create({
   container: {
@@ -102,6 +190,36 @@ const styles = StyleSheet.create({
     backgroundColor: "#FF6C00",
     justifyContent: "center",
     alignItems: "center",
+  },
+  commentBox: {
+    flexDirection: "row",
+
+    marginBottom: 10,
+    minHeight: 30,
+  },
+  comment: {
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    borderRadius: 6,
+
+    flex: 1,
+    padding: 16,
+  },
+  avatar: {
+    height: 28,
+    width: 28,
+    backgroundColor: "rgba(0, 0, 0, 0.03)",
+    borderRadius: 28,
+  },
+  text: {
+    color: "#212121",
+
+    padding: 6,
+  },
+  textDate: {
+    textAlign: "right",
+    color: "#BDBDBD",
+    fontSize: 11,
+    paddingRight: 6,
   },
 });
 

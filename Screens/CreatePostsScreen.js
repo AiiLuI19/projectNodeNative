@@ -54,11 +54,11 @@ function CreatePostsScreen({ navigation }) {
     try {
       const photo = await cameraRef.takePictureAsync();
       setPhotoPath(photo.uri);
-      let { status } = await Location.requestForegroundPermissionsAsync();
-      if (status !== "granted") {
-        console.log("Permission to access location was denied");
-        return;
-      }
+      // let { status } = await Location.requestForegroundPermissionsAsync();
+      // if (status !== "granted") {
+      //   console.log("Permission to access location was denied");
+      //   return;
+      // }
       const location = await Location.getCurrentPositionAsync({});
       const coords = {
         latitude: location.coords.latitude,
@@ -67,28 +67,11 @@ function CreatePostsScreen({ navigation }) {
       setLocationPhoto(coords);
       console.log("location>>>>>", location);
       console.log("locationPhoto", locationPhoto);
+      console.log("photo>>>>>>", photo);
     } catch (err) {
       console.log(err.message);
     }
   };
-  // const takePhoto = async () => {
-  //   if (!snap) {
-  //     console.log("error");
-  //     return;
-  //   }
-  //   try {
-  //     const { status } = await Camera.getCameraPermissionsAsync();
-  //     if (status !== "granted") {
-  //       console.log("Permission to access camera was denied");
-  //       return;
-  //     }
-  //     const photo = await snap.takePictureAsync();
-
-  //     setPhotoPath(photo.uri);
-  //   } catch (err) {
-  //     console.log(err.message);
-  //   }
-  // };
 
   const uploadePhotoToServer = async () => {
     try {
@@ -116,8 +99,8 @@ function CreatePostsScreen({ navigation }) {
       const { photo, location } = await uploadePhotoToServer();
       await addDoc(collection(db, "posts"), {
         photo,
-        name: photoName,
-        locationName,
+        name: text,
+        textMap,
         location,
         userId,
         login,
@@ -153,6 +136,7 @@ function CreatePostsScreen({ navigation }) {
       reset();
       setLoading(false);
       navigation.navigate("posts");
+      // , { text, textMap, locationPhoto, photoPath }
     } catch (err) {
       console.log(err);
     }
