@@ -36,7 +36,7 @@ const ProfileScreen = ({ navigation, route }) => {
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
-  console.log("login", login);
+
   const uploadePhotoToServer = async (avatar) => {
     try {
       const response = await fetch(avatar);
@@ -97,7 +97,7 @@ const ProfileScreen = ({ navigation, route }) => {
     );
     return () => unsubscribe();
   }, []);
-  console.log("posts", posts);
+
   return (
     <View style={styles.container}>
       <ImageBackground

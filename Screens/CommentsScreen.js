@@ -55,6 +55,7 @@ function CommentsScreen({ route }) {
   }, [route.params]);
 
   const addComment = async () => {
+    Keyboard.dismiss();
     if (comment.trim().length === 0) {
       onKeyboradHide();
       return;
@@ -86,7 +87,7 @@ function CommentsScreen({ route }) {
           style={{
             marginTop: 32,
             flex: 1,
-            marginBottom: 32,
+            marginBottom: 11,
             zIndex: 1,
           }}
         >
@@ -99,39 +100,45 @@ function CommentsScreen({ route }) {
             }}
           ></Image>
         </View>
-        <FlatList
-          style={{ marginBottom: 10 }}
-          data={comments}
-          keyExtractor={(item) => item.id}
-          renderItem={({ item }) => (
-            <View
-              style={{
-                ...styles.commentBox,
-                flexDirection: item.userId === userId ? "row" : "row-reverse",
-              }}
-              onStartShouldSetResponder={() => true}
-            >
+        <View
+          style={{
+            height: 400,
+          }}
+        >
+          <FlatList
+            style={{ marginBottom: 10 }}
+            data={comments}
+            keyExtractor={(item) => item.id}
+            renderItem={({ item }) => (
               <View
                 style={{
-                  ...styles.comment,
-                  borderTopRightRadius: item.userId === userId ? 0 : 6,
-                  borderTopLeftRadius: item.userId === userId ? 6 : 0,
+                  ...styles.commentBox,
+                  flexDirection: item.userId === userId ? "row" : "row-reverse",
                 }}
+                onStartShouldSetResponder={() => true}
               >
-                <Text style={styles.text}>{item?.comment}</Text>
-                <Text style={styles.textDate}>{item?.date}</Text>
+                <View
+                  style={{
+                    ...styles.comment,
+                    borderTopRightRadius: item.userId === userId ? 0 : 6,
+                    borderTopLeftRadius: item.userId === userId ? 6 : 0,
+                  }}
+                >
+                  <Text style={styles.text}>{item?.comment}</Text>
+                  <Text style={styles.textDate}>{item?.date}</Text>
+                </View>
+                <Image
+                  source={{ uri: item.avatar }}
+                  style={{
+                    ...styles.avatar,
+                    marginLeft: item.userId === userId ? 16 : 0,
+                    marginRight: item.userId === userId ? 0 : 16,
+                  }}
+                ></Image>
               </View>
-              <Image
-                source={{ uri: item.avatar }}
-                style={{
-                  ...styles.avatar,
-                  marginLeft: item.userId === userId ? 16 : 0,
-                  marginRight: item.userId === userId ? 0 : 16,
-                }}
-              ></Image>
-            </View>
-          )}
-        ></FlatList>
+            )}
+          ></FlatList>
+        </View>
 
         <KeyboardAvoidingView
           behavior={Platform.OS === "ios" && "position"}
@@ -200,8 +207,9 @@ const styles = StyleSheet.create({
   comment: {
     backgroundColor: "rgba(0, 0, 0, 0.03)",
     borderRadius: 6,
-
-    flex: 1,
+    width: "85%",
+    // height: 400,
+    // flex: 1,
     padding: 16,
   },
   avatar: {
