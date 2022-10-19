@@ -7,6 +7,11 @@ import {
   TextInput,
   Image,
 } from "react-native";
+import { storage, db } from "../firebase/config";
+import { collection, addDoc } from "firebase/firestore";
+import { useSelector } from "react-redux";
+import { ref, uploadBytesResumable, getDownloadURL } from "firebase/storage";
+import uuid from "react-native-uuid";
 import { Camera } from "expo-camera";
 import * as ImagePicker from "expo-image-picker";
 import * as MediaLibrary from "expo-media-library";
@@ -25,6 +30,8 @@ function CreatePostsScreen({ navigation }) {
   const [locationPhoto, setLocationPhoto] = useState(null);
   const [loading, setLoading] = useState(false);
 
+  const { userId, login } = useSelector((state) => state.auth);
+
   useEffect(() => {
     (async () => {
       const { status } = await Camera.requestCameraPermissionsAsync();
@@ -42,11 +49,6 @@ function CreatePostsScreen({ navigation }) {
   if (hasPermission === false) {
     return <Text>No access to camera</Text>;
   }
-  const reset = () => {
-    onChangeText("");
-    onChangeTextMap("");
-    setPhotoPath("");
-  };
 
   const takePhoto = async () => {
     try {
@@ -69,15 +71,61 @@ function CreatePostsScreen({ navigation }) {
       console.log(err.message);
     }
   };
+  // const takePhoto = async () => {
+  //   if (!snap) {
+  //     console.log("error");
+  //     return;
+  //   }
+  //   try {
+  //     const { status } = await Camera.getCameraPermissionsAsync();
+  //     if (status !== "granted") {
+  //       console.log("Permission to access camera was denied");
+  //       return;
+  //     }
+  //     const photo = await snap.takePictureAsync();
 
-  const onSubmit = async () => {
+  //     setPhotoPath(photo.uri);
+  //   } catch (err) {
+  //     console.log(err.message);
+  //   }
+  // };
+
+  const uploadePhotoToServer = async () => {
     try {
-      setLoading(true);
-      reset();
-      setLoading(false);
-      navigation.navigate("posts", { text, textMap, locationPhoto, photoPath });
+      const postId = uuid.v4().split("-").join("");
+      const response = await fetch(photoPath);
+      const file = await response.blob();
+      const storageRef = await ref(storage, `posts/${postId}`);
+      await uploadBytesResumable(storageRef, file);
+      const photo = await getDownloadURL(storageRef);
+      let { status } = await Location.requestForegroundPermissionsAsync();
+      if (status !== "granted") {
+        console.log("Permission to access location was denied");
+        return;
+      }
+      const location = await Location.getCurrentPositionAsync({});
+
+      return { photo, location };
     } catch (err) {
       console.log(err);
+    }
+  };
+
+  const createPost = async () => {
+    try {
+      const { photo, location } = await uploadePhotoToServer();
+      await addDoc(collection(db, "posts"), {
+        photo,
+        name: photoName,
+        locationName,
+        location,
+        userId,
+        login,
+        comments: 0,
+        likes: [],
+      });
+    } catch (e) {
+      console.error("Error adding document: ", e);
     }
   };
   const uploadPhoto = async () => {
@@ -90,6 +138,23 @@ function CreatePostsScreen({ navigation }) {
 
     if (!result.cancelled) {
       setPhotoPath(result.uri);
+    }
+  };
+
+  const reset = () => {
+    onChangeText("");
+    onChangeTextMap("");
+    setPhotoPath("");
+  };
+  const onSubmit = async () => {
+    try {
+      reset();
+      await createPost();
+      reset();
+      setLoading(false);
+      navigation.navigate("posts");
+    } catch (err) {
+      console.log(err);
     }
   };
 

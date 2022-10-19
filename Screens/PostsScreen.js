@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import {
   View,
   Text,
@@ -7,28 +8,82 @@ import {
   Image,
   TouchableOpacity,
 } from "react-native";
+import {
+  collection,
+  getDocs,
+  getDoc,
+  arrayUnion,
+  arrayRemove,
+  doc,
+  updateDoc,
+  onSnapshot,
+} from "firebase/firestore";
+import { pathSlice } from "../redux/pathReducer";
+import { db } from "../firebase/config";
 import { FontAwesome } from "@expo/vector-icons";
 import { FontAwesome5 } from "@expo/vector-icons";
 
 const PostsScreen = ({ navigation, route }) => {
   const [post, setPost] = useState([]);
+  const { email, login, avatar, userId } = useSelector((state) => state.auth);
 
-  useEffect(() => {
-    if (!route.params) {
-      return;
-    }
-    setPost((prevState) => [...prevState, route.params]);
-  }, [route.params]);
+  const dispatch = useDispatch();
 
-  const bd = {
-    email: "iuliia@mail.ua",
-    login: "iuliia",
-    avatar:
-      "https://i.postimg.cc/0NS3hM9s/158715-milye-koshki-kot-kotenok-privlekatelnost-pes-3840x2160.jpg",
-    userId: 1,
+  const getAllPosts = async () => {
+    const querySnapshot = await getDocs(collection(db, "posts"));
+    let newPosts = [];
+    querySnapshot.forEach((doc) => {
+      newPosts.push({ ...doc.data(), id: doc.id });
+    });
+    setPosts(newPosts);
   };
 
-  console.log("post", post);
+  const addLike = async (id) => {
+    const result = await getDoc(doc(db, "posts", `${id}`));
+    if (result.data().likes.includes(`${userId}`)) {
+      await updateDoc(doc(db, "posts", `${id}`), {
+        likes: arrayRemove(`${userId}`),
+      });
+    } else {
+      await updateDoc(doc(db, "posts", `${id}`), {
+        likes: arrayUnion(`${userId}`),
+      });
+    }
+  };
+
+  // const bd = {
+  //   email: "iuliia@mail.ua",
+  //   login: "iuliia",
+  //   avatar:
+  //     "https://i.postimg.cc/0NS3hM9s/158715-milye-koshki-kot-kotenok-privlekatelnost-pes-3840x2160.jpg",
+  //   userId: 1,
+  // };
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "posts"),
+      (snapshot) => {
+        getAllPosts();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const unsubscribe = onSnapshot(
+      collection(db, "posts"),
+      (snapshot) => {
+        getAllPosts();
+      },
+      (error) => {
+        console.log(error);
+      }
+    );
+    return () => unsubscribe();
+  }, []);
   return (
     <View style={styles.container}>
       <View
@@ -42,9 +97,9 @@ const PostsScreen = ({ navigation, route }) => {
           style={styles.userBox}
           onPress={() => navigation.navigate("profile")}
         >
-          {bd.avatar ? (
+          {avatar ? (
             <Image
-              source={{ uri: bd.avatar }}
+              source={{ uri: avatar }}
               style={{
                 height: 60,
                 width: 60,
@@ -62,8 +117,8 @@ const PostsScreen = ({ navigation, route }) => {
             ></View>
           )}
           <View style={{ marginLeft: 8 }}>
-            <Text style={styles.textName}>{bd.login}</Text>
-            <Text style={styles.textEmail}>{bd.email}</Text>
+            <Text style={styles.textName}>{login}</Text>
+            <Text style={styles.textEmail}>{email}</Text>
           </View>
         </TouchableOpacity>
 

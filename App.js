@@ -1,49 +1,60 @@
-import React, { useCallback } from "react";
+import React, { useEffect, useState } from "react";
 import { useFonts } from "expo-font";
-import * as SplashScreen from "expo-splash-screen";
+// import * as SplashScreen from "expo-splash-screen";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-
-import {
-  StyleSheet,
-  View,
-  TouchableWithoutFeedback,
-  Keyboard,
-} from "react-native";
-import RegistrationScreen from "./Screens/RegistrationScreen";
-import LoginScreen from "./Screens/LoginScreen";
-import Home from "./Screens/Home";
+import { Provider } from "react-redux";
+import { StyleSheet, View } from "react-native";
+import AuthScreen from "./Screens/AuthScreen/AuthScreen";
+import { store } from "./redux/store";
 
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isReady, setIsReady] = useState(false);
   const [fontsLoaded] = useFonts({
     "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
     "Roboto-Medium": require("./assets/fonts/Roboto/Roboto-Medium.ttf"),
   });
 
-  const onLayoutRootView = useCallback(async () => {
-    if (fontsLoaded) {
-      await SplashScreen.hideAsync();
-    }
-  }, [fontsLoaded]);
+  // const onLayoutRootView = useCallback(async () => {
+  //   if (fontsLoaded) {
+  //     await SplashScreen.hideAsync();
+  //   }
+  // }, [fontsLoaded]);
 
-  if (!fontsLoaded) {
-    return null;
-  }
+  // if (!fontsLoaded) {
+  //   return null;
+  // }
+  useEffect(() => {
+    async function prepare() {
+      try {
+        await Font.loadAsync({
+          "Roboto-Regular": require("./assets/fonts/Roboto/Roboto-Regular.ttf"),
+          "Roboto-Medium": require("./assets/fonts/Roboto/Roboto-Medium.ttf"),
+        });
+      } catch (e) {
+        console.warn(e);
+      } finally {
+        setIsReady(true);
+      }
+    }
+
+    prepare();
+  }, []);
 
   return (
-    <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
-      <View style={styles.container} onLayout={onLayoutRootView}>
-        <NavigationContainer>
-          <Stack.Navigator initialRouteName="login">
-            <Stack.Screen name="auth" component={RegistrationScreen} />
-            <Stack.Screen name="login" component={LoginScreen} />
-            <Stack.Screen name="home" component={Home} />
-          </Stack.Navigator>
-        </NavigationContainer>
-      </View>
-    </TouchableWithoutFeedback>
+    // <View style={styles.container} onLayout={onLayoutRootView}>
+    <>
+      {isReady && (
+        <Provider store={store}>
+          <NavigationContainer>
+            <AuthScreen />
+          </NavigationContainer>
+        </Provider>
+      )}
+    </>
+    // </View>
   );
 }
 

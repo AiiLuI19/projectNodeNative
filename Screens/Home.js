@@ -2,6 +2,7 @@
 
 import React from "react";
 import { View, StyleSheet, TouchableOpacity } from "react-native";
+import { useDispatch } from "react-redux";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 
 import { AntDesign, Feather } from "@expo/vector-icons";
@@ -11,10 +12,12 @@ import CreatePostsScreen from "./CreatePostsScreen";
 import CommentsScreen from "./CommentsScreen";
 
 import MapScreen from "./MapScreen";
+import { authSignOutUser } from "../redux/authOperations";
 
 const Tabs = createBottomTabNavigator();
 
 const Home = ({ navigation }) => {
+  const dispatch = useDispatch();
   return (
     <Tabs.Navigator
       screenOptions={{
@@ -49,7 +52,8 @@ const Home = ({ navigation }) => {
               color="rgba(33, 33, 33, 0.8)
 "
               style={{ marginRight: 20 }}
-              onPress={() => alert("This is a button!")}
+              // onPress={() => alert("This is a button!")}
+              onPress={() => dispatch(authSignOutUser())}
             />
           ),
         }}
