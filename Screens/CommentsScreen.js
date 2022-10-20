@@ -26,7 +26,6 @@ import { useIsFocused } from "@react-navigation/native";
 import { AntDesign } from "@expo/vector-icons";
 
 function CommentsScreen({ route }) {
-  // const [post, setPost] = useState([]);
   const [comment, setComment] = useState("");
   const [comments, setComments] = useState([]);
   const { photo, id } = route.params;
@@ -51,7 +50,6 @@ function CommentsScreen({ route }) {
       return;
     }
     getAllComments();
-    // setPost(route.params);
   }, [route.params]);
 
   const addComment = async () => {
@@ -77,8 +75,6 @@ function CommentsScreen({ route }) {
     }
     setComment("");
   };
-
-  // console.log("photo", route.params.photo);
 
   return (
     <TouchableWithoutFeedback onPress={Keyboard.dismiss}>

@@ -238,9 +238,11 @@ const styles = StyleSheet.create({
   },
   comentsInfo: {
     flexDirection: "row",
+    alignItems: "baseline",
   },
   locationInfo: {
     flexDirection: "row",
+    alignItems: "baseline",
   },
 });
 

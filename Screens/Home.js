@@ -52,7 +52,6 @@ const Home = ({ navigation }) => {
               color="rgba(33, 33, 33, 0.8)
 "
               style={{ marginRight: 20 }}
-              // onPress={() => alert("This is a button!")}
               onPress={() => dispatch(authSignOutUser())}
             />
           ),
@@ -164,6 +163,9 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     lineHeight: 40,
+  },
+  arrow: {
+    marginLeft: 20,
   },
 });
 export default Home;

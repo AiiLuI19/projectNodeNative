@@ -149,67 +149,7 @@ const ProfileScreen = ({ navigation, route }) => {
             {loading && <ActivityIndicator style={styles.loader} />}
           </View>
           <Text style={styles.titleText}>{login}</Text>
-          {/* <View style={{ marginHorizontal: 16 }}>
-              {posts.map((item) => (
-                <View style={styles.postBox} key={item.id}>
-                  <Image
-                    source={{ uri: item.photo }}
-                    style={{ height: 240, borderRadius: 16 }}
-                  ></Image>
-                  <View style={{ marginTop: 8 }}>
-                    <Text style={styles.textPost}>{item.text}</Text>
-                  </View>
-                  <View style={styles.postInfoBox}>
-                    <View style={styles.comentsInfo}>
-                      <TouchableOpacity
-                        onPress={async () => {
-                          navigation.navigate("Comments", {
-                            photo: item.photo,
-                            id: item.id,
-                          });
-                          dispatch(
-                            pathSlice.actions.setPath({ path: route.name })
-                          );
-                        }}
-                      >
-                        <EvilIcons name="comment" size={24} color="#212121" />
-                      </TouchableOpacity>
-                      <Text style={styles.textPost}> {item.comments || 0}</Text>
-                    </View>
-                    <View style={styles.comentsInfo}>
-                      <View>
-                        <AntDesign name="like1" size={24} color="#212121" />
-                      </View>
-                      <Text style={styles.textPost}>
-                        {" "}
-                        {item.likes?.length || 0}
-                      </Text>
-                    </View>
-                    <View style={styles.locationInfo}>
-                      <Ionicons
-                        name="location-outline"
-                        size={20}
-                        color="#212121"
-                      />
-                      <Text
-                        style={styles.textLocation}
-                        onPress={() => {
-                          navigation.navigate("Map", {
-                            location: item.location,
-                            title: item.textMap,
-                          });
-                          dispatch(
-                            pathSlice.actions.setPath({ path: route.name })
-                          );
-                        }}
-                      >
-                        {item.locationName}
-                      </Text>
-                    </View>
-                  </View>
-                </View>
-              ))}
-            </View> */}
+
           <View style={styles.postBox}>
             <FlatList
               data={posts}
@@ -287,7 +227,6 @@ const ProfileScreen = ({ navigation, route }) => {
             />
           </View>
         </View>
-        {/* </ScrollView> */}
       </ImageBackground>
     </View>
   );
